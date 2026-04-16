@@ -1,0 +1,5 @@
+# 패키지 관리
+fastapi[standard]
+sqlalchemy 
+pymysql 
+cryptography

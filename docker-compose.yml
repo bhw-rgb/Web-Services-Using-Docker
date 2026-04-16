@@ -1,0 +1,29 @@
+services:
+  api:              # FastAPI 서버
+    build: ./api        # 현재 경로에 있는 Dockerfile로 이미지를 build해서 써라.
+    ports:
+      - "8000:8000"
+    
+    depends_on:
+      - db
+    volumes:
+      - ./api:/app
+
+# hub.docker.com/_/mysql#environment-variables -> 환경 키 설정 방법
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: app_db
+    ports:
+      - "33061:3306"
+    volumes:
+      - local_db:/var/lib/mysql
+
+  worker:
+    build: ./worker
+    volumes:
+      - ./worker:/app
+        
+volumes:
+  local_db:
