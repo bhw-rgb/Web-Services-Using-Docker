@@ -1,13 +1,14 @@
 services:
-  api:              # FastAPI 서버
-    build: ./api        # 현재 경로에 있는 Dockerfile로 이미지를 build해서 써라.
+  api:                       # FastAPI 서버
+    build: ./app/api      
     ports:
       - "8000:8000"
     
     depends_on:
       - db
+      - redis
     volumes:
-      - ./api:/app
+      - ./app/api:/app
 
 # hub.docker.com/_/mysql#environment-variables -> 환경 키 설정 방법
   db:
@@ -21,9 +22,15 @@ services:
       - local_db:/var/lib/mysql
 
   worker:
-    build: ./worker
+    build: ./app/worker
     volumes:
-      - ./worker:/app
-        
+      - ./app/worker:/app
+    depends_on:
+      - redis
+  
+  redis:
+    image: redis:7
+
+
 volumes:
   local_db:
